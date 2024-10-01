@@ -50,7 +50,7 @@ async def join(client, invite_link):
     
     
 #----------------------------------
-from telethon.errors import UserNotParticipantError
+'''from telethon.errors import UserNotParticipantError
 from telethon.tl.functions.channels import GetParticipantRequest
 
 async def force_sub(client, channel, user_id, ft):
@@ -71,7 +71,7 @@ async def force_sub(client, channel, user_id, ft):
         s, r = True, f"ERROR: {str(e)}. Ensure the ForceSub channel exists or check the channel ID."
     
     return s, r
-
+'''
 
 #------------------------------
 def TimeFormatter(milliseconds) -> str:
