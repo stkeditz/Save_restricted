@@ -50,17 +50,28 @@ async def join(client, invite_link):
     
     
 #----------------------------------
-async def force_sub(client, channel, id, ft):
+from telethon.errors import UserNotParticipantError
+from telethon.tl.functions.channels import GetParticipantRequest
+
+async def force_sub(client, channel, user_id, ft):
     s, r = False, None
     try:
-        x = await client(GetParticipantRequest(channel=channel, participant=int(id)))
-        left = x.stringify()
-        s, r = (True, ft) if 'left' in left else (False, None)
+        # Get the participant details for the user in the channel
+        participant = await client(GetParticipantRequest(channel=channel, participant=int(user_id)))
+        participant_info = participant.stringify()
+        
+        # Check if the user has 'left' the channel or not
+        if 'left' in participant_info or 'kicked' in participant_info:
+            s, r = True, f"To use this bot, you've to join @{channel}."
+        else:
+            s, r = False, ft  # User is already in the channel
     except UserNotParticipantError:
-        s, r = True, f"To use this bot you've to join @{channel}."
-    except Exception:
-        s, r = True, "ERROR: Add in ForceSub channel, or check your channel id."
+        s, r = True, f"To use this bot, you've to join @{channel}."
+    except Exception as e:
+        s, r = True, f"ERROR: {str(e)}. Ensure the ForceSub channel exists or check the channel ID."
+    
     return s, r
+
 
 #------------------------------
 def TimeFormatter(milliseconds) -> str:
